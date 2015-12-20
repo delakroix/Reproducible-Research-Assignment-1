@@ -3,7 +3,7 @@ title: "Coursera Assignment"
 author: "Yihao"
 date: "18 December 2015"
 output: html_document
---
+-----
 
 
 Introduction
