@@ -1,12 +1,4 @@
 ---
-output: 
-  html_document: 
-    fig_caption: yes
-    keep_md: yes
-    self_contained: no
-    toc: yes
----
----
 title: "Coursera Assignment"
 author: "Yihao"
 date: "18 December 2015"
@@ -39,14 +31,24 @@ Show any code that is needed to
 1.	Load the data (i.e. read.csv())
 Download the zip file and unzip the activity.csv into the working directory
 
-```{r,echo = FALSE}
-library(dplyr)
-library(lubridate)
+
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
 ```
 
 
 Loading the data.
-```{r,echo = TRUE}
+
+```r
 sportsdata <- read.csv("C:/Users/yihaon/Documents/activity.csv")
 ```
 
@@ -55,28 +57,47 @@ What is mean total number of steps taken per day?
 For this part of the assignment, you can ignore the missing values in the dataset.
 1.	Calculate the total number of steps taken per day
 
-```{r,echo = TRUE}
 
+```r
 totalsteps <- sum(sportsdata$steps, na.rm = TRUE)
 totalsteps
+```
+
+```
+## [1] 570608
 ```
 
 
 If you do not understand the difference between a histogram and a barplot, research the difference between them. Make a histogram of the total number of steps taken each day
 
 Use histogram function
-```{r,echo = TRUE}
+
+```r
 tseachday <- aggregate(steps~date, data=sportsdata, FUN=sum, na.rm=TRUE)
 hist(tseachday$steps)
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
 
 Calculate and report the mean and median of the total number of steps taken per day:
-```{r,echo = TRUE}
+
+```r
 tsmean <- mean(tseachday$steps)
 tsmedian <- median(tseachday$steps)
 tsmean
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 tsmedian
+```
+
+```
+## [1] 10765
 ```
 
 
@@ -84,15 +105,19 @@ What is the average daily activity pattern?
 1.	Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
 Time series plot done using mean of 5-min interval and the plot function:
-```{r,echo = TRUE}
+
+```r
 fiveminavg <- aggregate(steps~interval, data=sportsdata, FUN=mean, na.rm=TRUE)
 plot(x = fiveminavg$interval, y = fiveminavg$steps, type = "l") 
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+
 2.	Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
 Set found using max and for loop function:
-```{r,echo = TRUE}
+
+```r
 maxsteps <- max(fiveminavg$steps)
 for (i in 1:288) 
 {
@@ -100,6 +125,10 @@ for (i in 1:288)
         FM_Int_MS <- fiveminavg$interval[i]
 }
 FM_Int_MS
+```
+
+```
+## [1] 835
 ```
 
 
@@ -110,14 +139,20 @@ Note that there are a number of days/intervals where there are missing values (c
 1.	Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
 Rows with missing values is as below:
-```{r,echo = TRUE}
+
+```r
 NArows <- sum(is.na(sportsdata$steps))
 NArows
 ```
 
+```
+## [1] 2304
+```
+
 2.	Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
-```{r}
+
+```r
 sportsdata2<- sportsdata %>%
   group_by(interval)  %>%
   mutate(steps= ifelse(is.na(steps), mean(steps, na.rm=TRUE), steps))
@@ -126,7 +161,8 @@ sportsdata2<- sportsdata %>%
 
 3.	Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
-```{r}
+
+```r
 sportsdata3<- sportsdata2 %>%
   group_by(date) %>%
   summarize(total.steps=sum(steps, na.rm=TRUE))
@@ -135,22 +171,36 @@ sportsdata3<- sportsdata2 %>%
 
 4.	Make a histogram of the total number of steps taken each day 
 
-```{r}
 
+```r
 tseachday2 <- aggregate(steps~date, sportsdata2, FUN=sum, na.rm=TRUE)
 
 hist(tseachday2$steps)
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
+
 
 Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment?
 
-```{r}
+
+```r
 tsmean2 <- mean(tseachday2$steps)
 tsmedian2 <- median(tseachday2$steps)
 
 tsmean2 #no change
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 tsmedian2 #yes, it changed
+```
+
+```
+## [1] 10766.19
 ```
 
 
@@ -159,7 +209,8 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 
 2.	Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
 
-```{r,echo = TRUE}
+
+```r
 week <- wday(sportsdata2$date)
 weekday <- week
 for (i in 1:17568) # loop to find the na
@@ -190,9 +241,15 @@ fiveminavgwd <- aggregate(steps~interval,data=weekday_frame, FUN=mean, na.rm=TRU
 fiveminavgwe <- aggregate(steps~interval, data=weekend_frame, FUN=mean, na.rm=TRUE)
 
 plot(x = fiveminavgwd$interval, y = fiveminavgwd$steps, type = "l")
-plot(x = fiveminavgwe$interval, y = fiveminavgwe$steps, type = "l")
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-13-1.png) 
+
+```r
+plot(x = fiveminavgwe$interval, y = fiveminavgwe$steps, type = "l")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-13-2.png) 
 
 
 
